@@ -1,4 +1,4 @@
-package mft;
+package src.mft;
 
 import java.util.ArrayList;
 import java.util.Scanner;
