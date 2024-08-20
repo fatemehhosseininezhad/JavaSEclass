@@ -10,9 +10,9 @@ import java.util.List;
 
 
 public class ProductDa implements AutoCloseable {
-    private final Connection connection;
+    private  Connection connection;
     private PreparedStatement preparedStatement;
-    private JdbcProvider jdbcProvider = new JdbcProvider();
+    private  JdbcProvider jdbcProvider = new JdbcProvider();
 
 
     public ProductDa() throws SQLException {
@@ -27,9 +27,8 @@ public class ProductDa implements AutoCloseable {
         preparedStatement.setInt(1, product.getId());
         preparedStatement.setString(2, product.getProduct());
         preparedStatement.setInt(3, product.getCount());
+        preparedStatement.setString(5, product.getBrand().name()) ;
         preparedStatement.setDouble(4, product.getPrice());
-        preparedStatement.setString(5, product.getBrand().name());
-
         preparedStatement.execute();
     }
 
@@ -60,7 +59,7 @@ public class ProductDa implements AutoCloseable {
         );
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        List<Product> personList = new ArrayList<>();
+        List<Product> productList = new ArrayList<>();
 
         while (resultSet.next()) {
             Product product =
@@ -68,13 +67,13 @@ public class ProductDa implements AutoCloseable {
                             .builder()
                             .id(resultSet.getInt("ID"))
                             .product(resultSet.getString("NAME"))
+                            .brand(Brand.valueOf(resultSet.getString("BRAND")))
                             .count(resultSet.getInt("COUNT"))
-                            .brand(Brand.valueOf(resultSet.getString("CITY")))
-                            .price(resultSet.getDouble("PRICE"))
+                            .price(resultSet.getInt("PRICE"))
                             .build();
-            personList.add(product);
+            productList.add(product);
         }
-        return personList;
+        return productList;
     }
 
     @Override

@@ -1,0 +1,45 @@
+CREATE TABLE PRODUCT2(
+                        ID NUMBER PRIMARY KEY,
+                        NAME NVARCHAR2(30),
+                        BRAND NVARCHAR2(30),
+                        PRICE number ,
+                        COUNT number,
+                        OWNER_ID REFERENCES PERSON
+
+);
+
+CREATE SEQUENCE Product_SEQ2 START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE PERSON(
+                       ID NUMBER PRIMARY KEY ,
+                       NAME NVARCHAR2(20),
+                       FAMILY NVARCHAR2(20),
+                       GENDER NVARCHAR2(20),
+                       BIRTHDATE DATE
+
+);
+CREATE SEQUENCE PERSON_SEQ START WITH 1 INCREMENT BY 1;
+
+CREATE VIEW PRODUCT_OWNER_REPORT AS
+SELECT N.ID           AS OWNER_ID,
+       N.NAME         AS PERSON_NAME,
+       N.FAMILY       AS PERSON_FAMILY,
+       T.ID           AS PRODUCT_ID,
+       T.NAME AS PRODUCT_NAME,
+       T.PRICE  AS PRODUCT_PRICE
+
+FROM PERSON N
+         JOIN PRODUCT2 T
+              ON N.ID = T.OWNER_ID;
+
+CREATE TABLE SELL_TBL
+(
+    ID NUMBER PRIMARY KEY,
+    PRUDUCT NVARCHAR2(20),
+    PRICE NUMBER,
+    SELL_TIME TIMESTAMP,
+    OWNER_ID REFERENCES PERSON,
+    PRODUCT_ID REFERENCES PRODUCT2
+);
+
+CREATE SEQUENCE SELL_TBL_SEQ START WITH 1 INCREMENT BY 1;

@@ -1,4 +1,4 @@
-package src.tamrin03.controller;
+package src.tamrin04.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -6,17 +6,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import src.tamrin03.model.entity.Brand;
-import src.tamrin03.model.entity.Product;
-import src.tamrin03.model.da.ProductDa;
-import src.tamrin03.model.utils.Validation;
+import src.tamrin04.model.da.ProductDa;
+import src.tamrin04.model.entity.Brand;
+import src.tamrin04.model.entity.Product;
+import src.tamrin04.model.utils.Validation;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class ProductController implements Initializable {
-
     private Validation validation = new Validation();
 
 
@@ -49,18 +48,18 @@ public class ProductController implements Initializable {
                 Product product =
                         Product
                                 .builder()
-                                .product(validation.productNameValidator(productTxt.getText()))
-                                .brand(Brand.valueOf(brandCmb.getSelectionModel().getSelectedItem()))
+                                .name(validation.productNameValidator(productTxt.getText()))
                                 .count(Integer.parseInt(countTxt.getText()))
                                 .price(Integer.parseInt(priceTxt.getText()))
+                                .brand(Brand.valueOf(brandCmb.getSelectionModel().getSelectedItem()))
                                 .build();
                 productDa.save(product);
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Product Saved\n" + product.toString());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Person Saved\n" + product.toString());
                 alert.show();
                 resetForm();
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Product Save Error\n" + e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Person Save Error\n" + e.getMessage());
                 alert.show();
             }
         });
@@ -71,11 +70,12 @@ public class ProductController implements Initializable {
                         Product
                                 .builder()
                                 .id(Integer.parseInt(idTxt.getText()))
-                                .product(validation.productNameValidator(productTxt.getText()))
-                                .brand(Brand.valueOf(brandCmb.getSelectionModel().getSelectedItem()))
-                                .price(Integer.parseInt(priceTxt.getText()))
+                                .name(validation.productNameValidator(productTxt.getText()))
                                 .count(Integer.parseInt(countTxt.getText()))
+                                .price(Integer.parseInt(priceTxt.getText()))
+                                .brand(Brand.valueOf(brandCmb.getSelectionModel().getSelectedItem()))
                                 .build();
+
                 productDa.edit(product);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Product Edited\n" + product);
@@ -107,27 +107,26 @@ public class ProductController implements Initializable {
         productTbl.setOnMouseReleased(event -> {
             Product product = productTbl.getSelectionModel().getSelectedItem();
             idTxt.setText(String.valueOf(product.getId()));
-            productTxt.setText(product.getProduct());
+            productTxt.setText(product.getName());
             brandCmb.getSelectionModel().select(product.getBrand().name());
             priceTxt.setText(String.valueOf(product.getPrice()));
             countTxt.setText(String.valueOf(product.getCount()));
         });
 
+    }
+    private void resetForm () {
+        idTxt.clear();
+        productTxt.clear();
+        priceTxt.clear();
+        countTxt.clear();
+        brandCmb.getSelectionModel().select(0);
+
+        try (ProductDa productDa = new ProductDa()) {
+            refreshTable(productDa.findAll());
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Find products Error\n" + e.getMessage());
+            alert.show();
         }
-        private void resetForm () {
-            idTxt.clear();
-            productTxt.clear();
-            brandCmb.getSelectionModel().select(0);
-            priceTxt.clear();
-            countTxt.clear();
-
-
-            try (ProductDa productDa = new ProductDa()) {
-                refreshTable(productDa.findAll());
-            } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Find products Error\n" + e.getMessage());
-                alert.show();
-            }
 
     } private void refreshTable(List<Product> productList) {
         ObservableList<Product> products = FXCollections.observableList(productList);
@@ -139,3 +138,4 @@ public class ProductController implements Initializable {
         productTbl.setItems(products);
     }
 }
+

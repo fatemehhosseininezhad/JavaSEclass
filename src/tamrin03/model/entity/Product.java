@@ -1,10 +1,9 @@
 package src.tamrin03.model.entity;
 
-import com.google.gson.Gson;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 
@@ -18,7 +17,7 @@ import lombok.experimental.SuperBuilder;
         private String product;
         private Brand brand;
         private int count;
-        private double price;
+        private int price;
 
 
 
